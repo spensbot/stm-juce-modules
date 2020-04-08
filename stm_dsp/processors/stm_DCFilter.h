@@ -10,7 +10,7 @@ namespace stm {
 class DCFilter : dsp::ProcessorBase
 {
 public:
-    void prepare (const dsp::ProcessSpec& spec) override {
+    void prepare (const dsp::ProcessSpec& spec) {
         float Q = 12.0f; // db per octave
         float freq = 20.0f; // Hz
         
@@ -21,12 +21,12 @@ public:
         filter.prepare(spec);
     }
     
-    void process (const dsp::ProcessContextReplacing<float>& context) override
+    void process (const dsp::ProcessContextReplacing<float>& context)
     {
         filter.process(context);
     }
     
-    void reset() override {
+    void reset() {
         filter.reset();
     }
     

@@ -7,11 +7,15 @@ class RamperBase {
 public:
     virtual ~RamperBase(){};
     
-    void initialize(float _current, float _delta){
+    void prepare(float _current, float _delta){
         current = _current;
         target = current;
         //Ensure that delta is positive to allow for optimizations in getNext()
         delta = std::abs(_delta);
+    }
+    
+    void reset(){
+        current = target;
     }
     
     void updateTarget(float newTarget){
@@ -23,7 +27,7 @@ public:
     virtual float getNext()=0;
     
 protected:
-    float current, target, delta, direction;
+    float current, target, delta, direction, start;
 };
 
 

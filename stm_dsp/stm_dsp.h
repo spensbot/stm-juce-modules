@@ -16,8 +16,13 @@
 
 #pragma once
 
-#include "rampers/stm_Rampers.h"
-#include "buffers/stm_RecircBuffer.h"
 #include "processors/stm_Delay.h"
 #include "processors/stm_DCFilter.h"
 #include "processors/stm_Saturation.h"
+#include "processors/stm_AutoGain.h"
+#include "processors/stm_MatchedBypass.h"
+#include "processors/stm_DryWetMix.h"
+
+#include "utilities/stm_Measuring.h"
+#include "utilities/stm_Rampers.h"
+#include "utilities/stm_RecircBuffer.h"

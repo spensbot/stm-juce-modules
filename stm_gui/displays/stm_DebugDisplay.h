@@ -11,8 +11,11 @@ namespace stm {
 class DebugDisplay : public Component, private Timer
 {
 public:
-    static const int numDebugLines = 30;
-    inline static String debugLines[30];
+    static void add(int line, String message){
+        jassert (line < numDebugLines);
+        
+        debugLines[line] = message;
+    }
     
     DebugDisplay()
     {
@@ -51,6 +54,9 @@ public:
     }
 
 private:
+    static const int numDebugLines = 30;
+    inline static String debugLines[30];
+    
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (DebugDisplay)
 };
 
