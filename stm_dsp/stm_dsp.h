@@ -26,3 +26,4 @@
 #include "utilities/stm_Measuring.h"
 #include "utilities/stm_Rampers.h"
 #include "utilities/stm_RecircBuffer.h"
+#include "utilities/stm_RollingRMS.h"

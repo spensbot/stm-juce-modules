@@ -2,24 +2,23 @@
 #include "../utilities/stm_Rampers.h"
 #include "../utilities/stm_Measuring.h"
 #include "../../stm_gui/displays/stm_DebugDisplay.h"
+#include "../utilities/stm_RollingRMS.h"
 
 using namespace juce;
 
 namespace stm {
-
 
 class MatchedBypass
 {
 public:
     void setActive (bool isActive){
         isBypassActive = isActive;
-        
-        justSwitched = true;
     }
     
     void prepare (const dsp::ProcessSpec& spec)
     {
-        gainRamper.prepare(1.0f, 0.001f);
+        rollingWetRMS.prepare(spec.sampleRate, 0.5f);
+        rollingDryRMS.prepare(spec.sampleRate, 0.5f);
     }
     
     /**
@@ -29,41 +28,30 @@ public:
      */
     void process (const dsp::ProcessContextReplacing<float>& context, const dsp::AudioBlock<float>& dryBlock)
     {
-        if (isBypassActive) {
-            auto outBlock = context.getOutputBlock();
-            int numSamples = (int) outBlock.getNumSamples();
-            
-            jassert (dryBlock.getNumSamples() == numSamples);
-            
-            float unprocessedLevel = Measuring::getRMSLevel<float>(dryBlock, 0, numSamples);
-            float processedLevel = Measuring::getRMSLevel<float>(outBlock, 0, numSamples);
-            
-            float targetGain = 1.0f;
-            
-            if (unprocessedLevel > 0.0f) {
-                targetGain = processedLevel / unprocessedLevel;
+        DebugDisplay::set(5, "Matched Bypass Gain: " + String(rollingWetRMS.get() / rollingDryRMS.get()));
+        
+        auto& wetBlock = context.getOutputBlock();
+        
+        auto numSamples = wetBlock.getNumSamples();
+        auto numChannels = wetBlock.getNumChannels();
+        
+        jassert (dryBlock.getNumSamples() == numSamples);
+        
+        for (int sampleIndex=0 ; sampleIndex<numSamples ; sampleIndex++)
+        {
+            float gain = 1.0f;
+            if (rollingDryRMS.get() > 0.0f) {
+                gain = rollingWetRMS.get() / rollingDryRMS.get();
             }
             
-            gainRamper.updateTarget(targetGain);
-            
-            DebugDisplay::set(5, "Bypass Target Gain: " + String(targetGain));
-            
-            if (justSwitched) {
-                //If the matched bypass was just turned on, we need to reset the gain ramper
-                //So it doesn't ramp from the previous gain value to the new target
-                gainRamper.reset();
-                
-                justSwitched = false;
-            }
-            
-            for (int sampleIndex=0 ; sampleIndex<numSamples ; sampleIndex++)
+            for (int channel=0 ; channel<numChannels ; channel++)
             {
-                float gain = gainRamper.getNext();
+                float drySample = dryBlock.getSample(channel, sampleIndex);
+                rollingDryRMS.push(drySample);
+                rollingWetRMS.push(wetBlock.getSample(channel, sampleIndex));
                 
-                for (int channelIndex=0 ; channelIndex<outBlock.getNumChannels() ; channelIndex++)
-                {
-                    float sample = dryBlock.getSample(channelIndex, sampleIndex);
-                    outBlock.setSample(channelIndex, sampleIndex, sample * gain);
+                if (isBypassActive) {
+                    wetBlock.setSample(channel, sampleIndex, drySample * gain);
                 }
             }
         }
@@ -71,13 +59,14 @@ public:
     
     void reset()
     {
-        gainRamper.reset();
+        rollingWetRMS.reset();
+        rollingDryRMS.reset();
     }
     
 private:
-    bool justSwitched = false;
     bool isBypassActive = false;
-    RamperLinear gainRamper;
+    
+    RollingRMS rollingWetRMS, rollingDryRMS;
 };
 
 
