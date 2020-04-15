@@ -11,10 +11,9 @@ class DCFilter : dsp::ProcessorBase
 {
 public:
     void prepare (const dsp::ProcessSpec& spec) {
-        float Q = 12.0f; // db per octave
         float freq = 20.0f; // Hz
         
-        auto hiPassCoefs = FilterCoefs::makeHighPass(spec.sampleRate, freq, Q);
+        auto hiPassCoefs = FilterCoefs::makeFirstOrderHighPass(spec.sampleRate, freq);
         
         *(filter.state) = *hiPassCoefs;
         

@@ -1,5 +1,7 @@
 #pragma once
 
+#include "../../stm_gui/displays/stm_DebugDisplay.h"
+
 namespace stm {
 
 /**
@@ -116,6 +118,9 @@ public:
         auto& inBlock = context.getInputBlock();
         auto& outBlock = context.getOutputBlock();
         
+        stm::DebugDisplay::set(1, "currentLevel: " + String(currentLevel));
+        stm::DebugDisplay::set(2, "currentGain: " + String(currentGain));
+        
         for (auto sampleIndex=0 ; sampleIndex<inBlock.getNumSamples() ; sampleIndex++)
         {
             //Find the maximum sample level of all channels
@@ -178,17 +183,17 @@ private:
     //--------------     USER PARAMETERS     ---------------
     
     //Should be between 0.0 and 1.0
-    float amount = 0.5f;
+    float amount = 0.0f;
     
     
     //------------     CONSTANT PARAMETERS     -------------
     
     //The minimum gain used on the incoming signal
     //Dropping this below 1.0 means that the incoming signal may be reduced.
-    const float minGain = 1.0f;
+    const float minGain = 0.5f;
     
     //The max gain used on the incoming signal
-    const float maxGain = 10.0f;
+    const float maxGain = 100.0f;
     
     //The desired signal ceiling (between 0.0 and 1.0)
     //Gain is adjusted to bring the incoming signal's peaks to this level.
@@ -199,11 +204,11 @@ private:
     
     //Gain increases slowly to bring signal level to target
     //Similar to release on a compressor.
-    const float rateOfIncrease = 0.0001f; // gain/ms
+    const float rateOfIncrease = 0.01f; // gain/ms
     
     //Gain decreases quickly when signal level goes over target
     //Similar to attack on a compressor.
-    const float rateOfDecrease = -0.001f; // gain/ms
+    const float rateOfDecrease = -1.0f; // gain/ms
     
     
     //--------------    INTERNAL VARIABLES     -------------

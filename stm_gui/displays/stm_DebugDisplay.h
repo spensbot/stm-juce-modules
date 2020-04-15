@@ -11,10 +11,12 @@ namespace stm {
 class DebugDisplay : public Component, private Timer
 {
 public:
-    static void add(int line, String message){
-        jassert (line < numDebugLines);
+    static void set(int line, String message){
+#if JUCE_DEBUG
+        jassert (line < numDebugLines - 1);
         
         debugLines[line] = message;
+#endif
     }
     
     DebugDisplay()

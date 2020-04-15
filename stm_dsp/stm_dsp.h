@@ -9,14 +9,14 @@
       website:          https://sailingtomars.com/
       license:          MIT
 
-      dependencies:     juce_core, juce_audio_basics, juce_dsp
+      dependencies:     juce_core, juce_audio_basics, juce_dsp, stm_gui
 
      END_JUCE_MODULE_DECLARATION
 */
 
 #pragma once
 
-#include "processors/stm_Delay.h"
+#include "processors/stm_DelaySimple.h"
 #include "processors/stm_DCFilter.h"
 #include "processors/stm_Saturation.h"
 #include "processors/stm_AutoGain.h"

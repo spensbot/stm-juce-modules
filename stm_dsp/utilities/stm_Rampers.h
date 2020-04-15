@@ -14,6 +14,7 @@ public:
         delta = std::abs(_delta);
     }
     
+    //Resetting the ramper is a useful way to snap to the target value without ramping.
     void reset(){
         current = target;
     }

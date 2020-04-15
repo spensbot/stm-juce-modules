@@ -1,6 +1,7 @@
 #pragma once
 #include "../utilities/stm_Rampers.h"
 #include "../utilities/stm_Measuring.h"
+#include "../../stm_gui/displays/stm_DebugDisplay.h"
 
 using namespace juce;
 
@@ -12,6 +13,8 @@ class MatchedBypass
 public:
     void setActive (bool isActive){
         isBypassActive = isActive;
+        
+        justSwitched = true;
     }
     
     void prepare (const dsp::ProcessSpec& spec)
@@ -35,8 +38,23 @@ public:
             float unprocessedLevel = Measuring::getRMSLevel<float>(dryBlock, 0, numSamples);
             float processedLevel = Measuring::getRMSLevel<float>(outBlock, 0, numSamples);
             
-            float targetGain = processedLevel / unprocessedLevel;
+            float targetGain = 1.0f;
+            
+            if (unprocessedLevel > 0.0f) {
+                targetGain = processedLevel / unprocessedLevel;
+            }
+            
             gainRamper.updateTarget(targetGain);
+            
+            DebugDisplay::set(5, "Bypass Target Gain: " + String(targetGain));
+            
+            if (justSwitched) {
+                //If the matched bypass was just turned on, we need to reset the gain ramper
+                //So it doesn't ramp from the previous gain value to the new target
+                gainRamper.reset();
+                
+                justSwitched = false;
+            }
             
             for (int sampleIndex=0 ; sampleIndex<numSamples ; sampleIndex++)
             {
@@ -57,6 +75,7 @@ public:
     }
     
 private:
+    bool justSwitched = false;
     bool isBypassActive = false;
     RamperLinear gainRamper;
 };

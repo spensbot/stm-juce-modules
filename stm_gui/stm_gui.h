@@ -20,3 +20,5 @@
 #include "displays/stm_RecircBufferDisplay.h"
 #include "displays/stm_DebugDisplay.h"
 #include "controls/stm_Slider2Axis.h"
+#include "displays/stm_DisabledVeil.h"
+#include "icons/stm_FilterIcon.h"
