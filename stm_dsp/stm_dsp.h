@@ -27,3 +27,5 @@
 #include "utilities/stm_Rampers.h"
 #include "utilities/stm_RecircBuffer.h"
 #include "utilities/stm_RollingRMS.h"
+#include "utilities/stm_Primes.h"
+#include "utilities/stm_Notes.h"
