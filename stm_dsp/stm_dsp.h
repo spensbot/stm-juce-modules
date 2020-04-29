@@ -9,7 +9,7 @@
       website:          https://sailingtomars.com/
       license:          MIT
 
-      dependencies:     juce_core, juce_audio_basics, juce_dsp, stm_gui
+      dependencies:     juce_core, juce_audio_basics, juce_dsp, juce_audio_processors, juce_events, stm_gui,
 
      END_JUCE_MODULE_DECLARATION
 */
@@ -29,3 +29,4 @@
 #include "utilities/stm_RollingRMS.h"
 #include "utilities/stm_Primes.h"
 #include "utilities/stm_Notes.h"
+#include "utilities/stm_ParameterAttachment.h"

@@ -57,6 +57,40 @@ public:
         }
     }
     
+    /**
+     The MatchedBypass processor only works with a ProcessContextNonReplacing.
+     Using this processor with ProcessContextReplacing doesn't make sense.
+     Because this processor expects separate inBlock and outBlock blocks.
+     */
+    void process (const dsp::AudioBlock<float>& dryBlock, const dsp::AudioBlock<float>& wetBlock)
+    {
+        DebugDisplay::set(5, "Matched Bypass Gain: " + String(rollingWetRMS.get() / rollingDryRMS.get()));
+        
+        auto numSamples = wetBlock.getNumSamples();
+        auto numChannels = wetBlock.getNumChannels();
+        
+        jassert (dryBlock.getNumSamples() == numSamples);
+        
+        for (int sampleIndex=0 ; sampleIndex<numSamples ; sampleIndex++)
+        {
+            float gain = 1.0f;
+            if (rollingDryRMS.get() > 0.0f) {
+                gain = rollingWetRMS.get() / rollingDryRMS.get();
+            }
+            
+            for (int channel=0 ; channel<numChannels ; channel++)
+            {
+                float drySample = dryBlock.getSample(channel, sampleIndex);
+                rollingDryRMS.push(drySample);
+                rollingWetRMS.push(wetBlock.getSample(channel, sampleIndex));
+                
+                if (isBypassActive) {
+                    wetBlock.setSample(channel, sampleIndex, drySample * gain);
+                }
+            }
+        }
+    }
+    
     void reset()
     {
         rollingWetRMS.reset();

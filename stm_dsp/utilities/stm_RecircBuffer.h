@@ -28,6 +28,8 @@ public:
     
     /**
      Linearly interpolates between samples to return non-integer sample delays.
+     Be sure to get samples after push() and before increment()
+     Otherwise, getSample(0) will return the oldest sample in the buffer.
      */
     float getInterSample(float delaySamples, int channel = 0){
         int delay0 = int (delaySamples);

@@ -57,6 +57,29 @@ public:
         }
     }
     
+    /**
+     The dry/wet mix processor only works with a ProcessContextNonReplacing.
+     Using this processor with ProcessContextReplacing doesn't make sense.
+     */
+    void process (const dsp::AudioBlock<float>& dryBlock, const dsp::AudioBlock<float>& outBlock)
+    {
+        jassert (dryBlock.getNumSamples() == outBlock.getNumSamples());
+        
+        for (auto sample = 0 ; sample < dryBlock.getNumSamples() ; sample++)
+        {
+            float dryGain = dryGainRamper.getNext();
+            float wetGain = wetGainRamper.getNext();
+            
+            for (auto channel = 0 ; channel < dryBlock.getNumChannels() ; channel++)
+            {
+                float drySample = dryBlock.getSample(channel, sample);
+                float wetSample = outBlock.getSample(channel, sample);
+                float outputSample = drySample * dryGain + wetSample * wetGain;
+                outBlock.setSample(channel, sample, outputSample);
+            }
+        }
+    }
+    
     void reset() {
         dryGainRamper.reset();
         wetGainRamper.reset();
