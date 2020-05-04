@@ -22,6 +22,8 @@
 #include "processors/stm_AutoGain.h"
 #include "processors/stm_MatchedBypass.h"
 #include "processors/stm_DryWetMix.h"
+#include "processors/stm_Panner.h"
+#include "processors/stm_FrequencyModulator.h"
 
 #include "utilities/stm_Measuring.h"
 #include "utilities/stm_Rampers.h"
@@ -30,3 +32,4 @@
 #include "utilities/stm_Primes.h"
 #include "utilities/stm_Notes.h"
 #include "utilities/stm_ParameterAttachment.h"
+#include "utilities/stm_Oscillator.h"

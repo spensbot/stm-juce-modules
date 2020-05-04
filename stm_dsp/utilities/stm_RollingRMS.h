@@ -2,9 +2,48 @@
 #include "stm_RecircBuffer.h"
 #include <math.h>
 
-using namespace juce;
-
 namespace stm {
+
+/** Similar to rolling average, but the average reacts differently to values above/below the current average. */
+class RollingAverageBiased {
+
+public: 
+    void prepare(float riseSamples, float fallSamples) {
+        weightUpNew = 1/riseSamples;
+        weightUpOld = 1 - weightUpNew;
+        weightDownNew = 1/fallSamples;
+        weightDownOld = 1 - weightDownNew;
+    }
+
+    void prepare(float sampleRate, float riseSeconds, float fallSeconds){
+        prepare(riseSeconds * sampleRate, fallSeconds * sampleRate);
+    }
+
+    void push(float sample) {
+        if(sample > average){
+            // Average moves up
+            average = weightUpNew * sample + weightUpOld * average;
+        } else {
+            // Average moves down
+            average = weightDownNew * sample + weightDownOld * average;
+        }
+    }
+
+    float get() {
+        return average;
+    }
+
+    void reset(){
+        average = 0.0f;
+    }
+
+private: 
+    float average = 0.0f;
+    float weightUpNew = 1.0f;
+    float weightUpOld = 1.0f;
+    float weightDownNew = 0.0f;
+    float weightDownOld = 0.0f;
+};
 
 class RollingAverage {
 public:
@@ -67,8 +106,29 @@ private:
     RollingAverage meanSquare;
 };
 
-} // namespace stm
+class RollingRMSBiased {
+public:
+    void prepare(double sampleRate, float riseSeconds, float fallSeconds){
+        meanSquare.prepare(sampleRate, riseSeconds, fallSeconds);
+    }
+
+    void push(float sample) {
+        meanSquare.push(sample * sample);
+    }
+
+    float get() {
+        return sqrt( (double) meanSquare.get() );
+    }
+
+    void reset(){
+        meanSquare.reset();
+    }
+
+private:
+    RollingAverageBiased meanSquare;
+};
         
+} // namespace stm
        
         
         
