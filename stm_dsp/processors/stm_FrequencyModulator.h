@@ -12,7 +12,7 @@ namespace stm {
 class FrequencyModulator {
     
 public:
-    /**Don't forget to call setDepth and setFrequency before use as well!*/
+    /**Don't forget to call setDepth and setRate before use as well!*/
     void prepare (const dsp::ProcessSpec& spec, float maxDepthMS)
     {
         sampleRate = spec.sampleRate;
@@ -35,7 +35,7 @@ public:
             
             for (auto channelIndex = 0 ; channelIndex < numChannels ; channelIndex++)
             {
-                buffer.push( processBlock.getSample(channelIndex, sampleIndex) );
+                buffer.push( processBlock.getSample(channelIndex, sampleIndex), channelIndex );
                 processBlock.setSample( channelIndex, sampleIndex, buffer.getInterSample(delaySamples, channelIndex) );
             }
             
@@ -53,7 +53,7 @@ public:
     {
         amplitudeSamples = ms / 1000.0f * sampleRate;
         
-        jassert(amplitudeSamples < offsetSamples);
+        //jassert(amplitudeSamples < offsetSamples);
     }
     
     void setRate (float hz)

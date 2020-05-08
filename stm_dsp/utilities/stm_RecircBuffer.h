@@ -1,4 +1,5 @@
 #pragma once
+#include "../../stm_gui/displays/stm_DebugDisplay.h"
 
 using namespace juce;
 
@@ -33,9 +34,11 @@ public:
      */
     float getInterSample(float delaySamples, int channel = 0){
         int delay0 = int (delaySamples);
-        int frac = delaySamples - float (delay0);
-        int rise = getSample(delay0 + 1, channel) - getSample(delay0, channel);
-        return rise * frac;
+        float frac = delaySamples - float (delay0);
+        float y0 = getSample(delay0, channel);
+        float y1 = getSample(delay0 + 1, channel);
+        float rise = y1 - y0;
+        return y0 + rise * frac;
     }
     
     /**
@@ -44,6 +47,7 @@ public:
      Otherwise, getSample(0) will return the oldest sample in the buffer.
      */
     float getSample(int delaySamples, int channel = 0){
+        
         int delayIndex = index - delaySamples;
         if (delayIndex < 0){
             delayIndex = buffer.getNumSamples() + delayIndex;

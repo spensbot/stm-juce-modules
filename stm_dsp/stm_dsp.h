@@ -33,3 +33,4 @@
 #include "utilities/stm_Notes.h"
 #include "utilities/stm_ParameterAttachment.h"
 #include "utilities/stm_Oscillator.h"
+#include "utilities/stm_Mixer.h"

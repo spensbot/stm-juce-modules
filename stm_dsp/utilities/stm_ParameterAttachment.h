@@ -69,7 +69,7 @@ struct ParameterAttachment : public AudioProcessorValueTreeState::Listener,
     {
         virtual ~Listener(){};
         /**
-         Called when a value is changed internally (e.g. from the message thread)
+         Called when a value is changed internally (e.g. from the host)
          Use this to callback to update gui elements
          */
         virtual void valueUpdated(ParameterAttachment* attachment, float newValue) = 0;

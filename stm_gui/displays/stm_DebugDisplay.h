@@ -21,11 +21,10 @@ public:
     
     DebugDisplay()
     {
-        startTimerHz(15);
+        startTimerHz(5);
         for(int i=0 ; i<numDebugLines ; i++){
             debugLines[i] = "";
         }
-        debugLines[0] = "Debug Messages:";
     }
 
     ~DebugDisplay()
