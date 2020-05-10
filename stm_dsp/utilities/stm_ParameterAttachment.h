@@ -78,6 +78,10 @@ struct ParameterAttachment : public AudioProcessorValueTreeState::Listener,
     void setListener(Listener* newListener){ listener = newListener; }
     void removeListener() { listener = nullptr; }
     
+    float getValue(){
+        return lastValue;
+    }
+    
 private:
     AudioProcessorValueTreeState& state;
     String paramID;
