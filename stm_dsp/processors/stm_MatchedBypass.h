@@ -28,8 +28,6 @@ public:
      */
     void process (const dsp::ProcessContextReplacing<float>& context, const dsp::AudioBlock<float>& dryBlock)
     {
-        DebugDisplay::set(5, "Matched Bypass Gain: " + String(rollingWetRMS.get() / rollingDryRMS.get()));
-        
         auto& wetBlock = context.getOutputBlock();
         
         auto numSamples = wetBlock.getNumSamples();
@@ -64,8 +62,6 @@ public:
      */
     void process (const dsp::AudioBlock<float>& dryBlock, const dsp::AudioBlock<float>& wetBlock)
     {
-        DebugDisplay::set(5, "Matched Bypass Gain: " + String(rollingWetRMS.get() / rollingDryRMS.get()));
-        
         auto numSamples = wetBlock.getNumSamples();
         auto numChannels = wetBlock.getNumChannels();
         
