@@ -20,15 +20,15 @@ struct Balance {
 class Balancer {
 public:
     /** Converts the mix to a human-readable string */
-    static String toStringPercent(float mix){
+    static String toString(float mix){
         if (approximatelyEqual(mix, 0.5f)){
             return "Center";
         } else if (mix < 0.5f) {
             int percent = int(100.0f - mix * 200.0f);
             return String(percent) + "% L";
         } else {
-            int percent = int(mix-0.5f * 200.0f);
-            return String(percent) + "% R";
+            float percentF = (mix-0.5f) * 200.0f;
+            return String(int(percentF)) + "% R";
         }
     }
     

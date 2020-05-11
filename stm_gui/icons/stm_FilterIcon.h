@@ -61,7 +61,7 @@ private:
     Path path;
     bool isHP = false;
     float w_hRatio = 1.7f;
-    float thickness = 3.0f;
+    float thickness = 1.5f;
     float elbow = 0.7f;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (FilterIcon)
