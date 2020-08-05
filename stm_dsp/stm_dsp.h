@@ -16,6 +16,8 @@
 
 #pragma once
 
+#include "analyzers/stm_LevelAnalyzer.h"
+
 #include "processors/stm_DelaySimple.h"
 #include "processors/stm_DCFilter.h"
 #include "processors/stm_Saturation.h"
@@ -27,8 +29,9 @@
 
 #include "utilities/stm_Measuring.h"
 #include "utilities/stm_Rampers.h"
+#include "utilities/stm_RingBuffer.h"
 #include "utilities/stm_RecircBuffer.h"
-#include "utilities/stm_RollingRMS.h"
+#include "utilities/stm_RollingAverage.h"
 #include "utilities/stm_Primes.h"
 #include "utilities/stm_Notes.h"
 #include "utilities/stm_ParameterAttachment.h"

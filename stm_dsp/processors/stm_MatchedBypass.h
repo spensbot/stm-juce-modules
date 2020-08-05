@@ -2,7 +2,7 @@
 #include "../utilities/stm_Rampers.h"
 #include "../utilities/stm_Measuring.h"
 #include "../../stm_gui/displays/stm_DebugDisplay.h"
-#include "../utilities/stm_RollingRMS.h"
+#include "../utilities/stm_RollingAverage.h"
 
 using namespace juce;
 

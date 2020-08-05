@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../../stm_gui/displays/stm_DebugDisplay.h"
+#include "../utilities/stm_RollingAverage.h"
 
 namespace stm {
 

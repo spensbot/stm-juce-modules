@@ -4,15 +4,49 @@
 
 namespace stm {
 
+class RollingAverage {
+public:
+    /**
+     1.0 < sustainSamples < inf
+     inf never incorporates new samples
+     0 takes the current sample as the average.
+     */
+    void prepare(float sustainSamples){
+        newWeight = 1.0f / sustainSamples;
+        oldWeight = 1.0f - newWeight;
+    }
+    
+    void prepare(float sampleRate, float sustainSeconds){
+        prepare(sampleRate * sustainSeconds);
+    }
+    
+    void push(float sample){
+        average = newWeight * sample + oldWeight * average;
+    }
+    
+    float get(){
+        return average;
+    }
+    
+    void reset(){
+        average = 0.0f;
+    }
+    
+private:
+    float average = 0.0f;
+    float newWeight = 1.0f;
+    float oldWeight = 0.0f;
+};
+
 /** Similar to rolling average, but the average reacts differently to values above/below the current average. */
 class RollingAverageBiased {
 
 public: 
     void prepare(float riseSamples, float fallSamples) {
-        weightUpNew = 1/riseSamples;
-        weightUpOld = 1 - weightUpNew;
-        weightDownNew = 1/fallSamples;
-        weightDownOld = 1 - weightDownNew;
+        weightUpNew = 1.0f/riseSamples;
+        weightUpOld = 1.0f - weightUpNew;
+        weightDownNew = 1.0f/fallSamples;
+        weightDownOld = 1.0f - weightDownNew;
     }
 
     void prepare(float sampleRate, float riseSeconds, float fallSeconds){
@@ -45,35 +79,6 @@ private:
     float weightDownOld = 0.0f;
 };
 
-class RollingAverage {
-public:
-    /**
-     0.0 < forgetFactor < 1.0.
-     0 never incorporates new samples.
-     1 takes the current sample as the average.
-     */
-    void prepare(float forgetFactor){
-        newWeight = forgetFactor;
-        oldWeight = 1 - newWeight;
-    }
-    
-    void push(float sample){
-        average = newWeight * sample + oldWeight * average;
-    }
-    
-    float get(){
-        return average;
-    }
-    
-    void reset(){
-        average = 0.0f;
-    }
-    
-private:
-    float average = 0.0f;
-    float newWeight = 1.0f;
-    float oldWeight = 0.0f;
-};
 
 /**
  A fast, not entirely accurate way of keeping a running tally of RMS that forgets old values.
@@ -85,9 +90,7 @@ class RollingRMS {
 public:
     
     void prepare(double sampleRate, float sustainSeconds){
-        float sustainSamples = sampleRate * sustainSeconds;
-        float forgetFactor = 1.0f / sustainSamples;
-        meanSquare.prepare(forgetFactor);
+        meanSquare.prepare(sampleRate, sustainSeconds);
     }
     
     void push(float sample){
@@ -105,6 +108,7 @@ public:
 private:
     RollingAverage meanSquare;
 };
+
 
 class RollingRMSBiased {
 public:
